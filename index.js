@@ -1,22 +1,25 @@
 require('dotenv').config()
 
+// console.log('https://'+process.env.DB_USER+':'+process.env.DB_PASS+'@'+process.env.DB_HOST)
+
 //require the Elasticsearch librray
 const elasticsearch = require('elasticsearch');
 // instantiate an elasticsearch client
 const client = new elasticsearch.Client({
-   cloud: {
-      id: 'name:'+ process.env.DB_ID,
-    },
-    auth: {
-      username: process.env.DB_USER,
-      password: process.env.DB_PASS
-    },
-   // hosts: [process.env.DB_HOST]
-     node: process.env.DB_HOST,
-
+  
+  cloud: {
+    id: process.env.DB_ID,
+  },
+  auth: {
+    username: process.env.DB_USER,
+    password: process.env.DB_PASS
+      // apiKey: 'NTVjVnJIUUJITnNERlVCUGpxS0Q6dGdtTU9TMThSQkNpcjJiMkVMeDZlQQ=='
+  },
+  hosts: [
+    'https://'+process.env.DB_USER+':'+process.env.DB_PASS+'@'+process.env.DB_HOST
+  ]
+  // node: process.env.DB_HOST,
 });
-
-console.log(client)
 
 //require Express
 const express = require( 'express' );
@@ -34,6 +37,7 @@ client.ping({
  // at this point, eastic search is down, please check your Elasticsearch service
      if (error) {
          console.error('elasticsearch cluster is down!');
+         console.log(error)
      } else {
          console.log('Everything is ok');
      }
