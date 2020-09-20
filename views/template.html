@@ -150,7 +150,7 @@ var app = new Vue({
     methods: {
         // make an axios request to the server with the current search query
         search: function() {
-            axios.get("http://127.0.0.1:3001/search?q=" + this.query)
+            axios.get("search?q=" + this.query)
                 .then(response => {
 
                     this.flag = false
@@ -186,12 +186,13 @@ var app = new Vue({
 
         getRecentSearches: function(){
 
+
             fetch('https://api.ipify.org?format=json')
             .then(x => x.json())
             .then(({ ip }) => {
                 this.ip = ip;
 
-                axios.get("http://127.0.0.1:3001/recent-searches?ip=" +this.ip)
+                axios.get("recent-searches?ip=" +this.ip)
                     .then(response => {
 
                         this.recent_searches = response.data.hits
@@ -204,7 +205,7 @@ var app = new Vue({
 
         record: function(id, name){
 
-            axios.post("http://127.0.0.1:3001/record", {
+            axios.post("record", {
                 ip: this.ip,
                 product_id: id,
                 name: name
