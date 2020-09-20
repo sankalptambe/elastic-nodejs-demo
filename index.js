@@ -1,8 +1,10 @@
+require('dotenv').config()
+
 //require the Elasticsearch librray
 const elasticsearch = require('elasticsearch');
 // instantiate an elasticsearch client
 const client = new elasticsearch.Client({
-   hosts: [ 'http://localhost:9200']
+   hosts: [process.env.DB_HOST]
 });
 //require Express
 const express = require( 'express' );
