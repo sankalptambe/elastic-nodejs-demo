@@ -1,2 +1,2 @@
-# Elastic Nodejs Demo
+# ElasticSerarch Nodejs Demo
 A Product search demo build with elasticsearch and nodejs.
