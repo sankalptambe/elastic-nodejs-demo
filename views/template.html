@@ -20,7 +20,7 @@
         </div>
     </div>
     <div class="row">
-        <div class='col-md-12' > 
+        <div class='col-md-12'> 
 
             <span v-if="flag">
                     
@@ -32,27 +32,40 @@
           
          </div>
 
-         <div class='col-md-12' style='margin-top:20px'>
-             <div class="col-md-6" v-for="result in hits.hits">
+         <div class='col-md-12' style='margin-top:20px' >
+             <div class='col-md-8'>
+                 <div class="col-md-6" v-for="result in hits.hits">
 
-                <div class="panel panel-default">
-                    <div class="panel-heading">
+                    <div class="panel panel-default">
+                        <div v-on:click="record( result._id,  result._source.name)" class="panel-heading" style='cursor:pointer'>
 
-                    <span v-html="result.highlight.name[0]"></span>
-                      <!--   ({{ result._source.unit }}) - Rs. {{ result._source.selling_price }}  -->
-                    </div>
-                    <div class="panel-body">
+                        <span v-html="result.highlight.name[0]"></span>
+                          <!--   ({{ result._source.unit }}) - Rs. {{ result._source.selling_price }}  -->
+                        </div>
+                        <div class="panel-body">
 
-                        <p>price: {{ result._source.selling_price }}</p>
-                        <p>unit:  {{ result._source.unit }}</p>
-                        <p > category: <span style='color:grey; font-size:13px'>{{ result._source.main_category }} >>  {{ result._source.sub_category }} >>  {{ result._source.leaf_category }}</span> </p>
+                            <p>price: {{ result._source.selling_price }}</p>
+                            <p>unit:  {{ result._source.unit }}</p>
+                            <p > category: <span style='color:grey; font-size:13px'>{{ result._source.main_category }} >>  {{ result._source.sub_category }} >>  {{ result._source.leaf_category }}</span> </p>
+                        </div>
                     </div>
                 </div>
-            </div>
+             </div>
 
-
-         </div>
-        
+             
+              <div v-if="recent_searches.length"  class='col-md-4'>
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            Recently searched items...
+                        </div>
+                        <div class="panel-body">
+                            <ul  v-for="result in recent_searches">
+                                <li>{{ result._source.name }}</li>
+                            </ul>
+                        </div>
+                    </div> 
+             </div>
+        </div>
     </div>
 </div>
 <!--- some styling for the page -->
@@ -129,7 +142,9 @@ var app = new Vue({
         flag :false,
         suggest: '',
         instead: '',
-        query: ''
+        query: '',
+        ip: '',
+        recent_searches: []
     },
     // declare methods in this Vue component. here only one method which performs the search is defined
     methods: {
@@ -167,7 +182,45 @@ var app = new Vue({
                     this.instead = suggest.map(({ text }) => text).join(' ');
 
                 })
+        },
+
+        getRecentSearches: function(){
+
+            fetch('https://api.ipify.org?format=json')
+            .then(x => x.json())
+            .then(({ ip }) => {
+                this.ip = ip;
+
+                axios.get("http://127.0.0.1:3001/recent-searches?ip=" +this.ip)
+                    .then(response => {
+
+                        this.recent_searches = response.data.hits
+                    }).catch(function (error) {
+                        console.log('get recent search error...')
+                      });
+            });
+
+        },
+
+        record: function(id, name){
+
+            axios.post("http://127.0.0.1:3001/record", {
+                ip: this.ip,
+                product_id: id,
+                name: name
+              })
+              .then(function (response) {
+
+                alert('Your search preference is saved!');
+                location.reload();
+              })
+              .catch(function (error) {
+                console.log(error);
+              });
         }
+    },
+    beforeMount(){
+        this.getRecentSearches()
     },
     // declare Vue watchers
     watch: {

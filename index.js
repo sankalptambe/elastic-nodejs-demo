@@ -94,6 +94,73 @@ app.get('/search', function (req, res){
   });
 
 })
+
+
+// define the /search route that should return elastic search results 
+app.post('/record', function (req, res){
+
+  console.log(req.body.ip, req.body.name, req.body.product_id)
+
+  var dateTime = require('node-datetime');
+  var dt = dateTime.create();
+  var formatted = dt.format('Y-m-d H:M:S');
+
+
+  client.index({
+    index:'user_behaviour',  
+    body:{
+      'ip': req.body.ip,
+      'product_id': req.body.product_id,
+      'name': req.body.name,
+      'date': formatted
+    }
+  })
+  .then(results => {
+    res.send(results);
+  })
+  .catch(err=>{
+    console.log(err)
+    res.send([]);
+  });
+
+
+})
+
+// define the /search route that should return elastic search results 
+app.get('/recent-searches', function (req, res){
+  // declare the query object to search elastic search and return only 200 results from the first result found. 
+  // also match any data where the name is like the query string sent in
+
+  let body = {
+    'size': 10,
+    "query": {
+      "bool": {
+        "filter": [
+          { "term": { "ip":  req.query['ip']  }}
+        ]
+      }
+    },
+    "sort": [
+      {
+        "date": {
+          "order": "desc"
+        }
+      }
+    ]
+  }
+
+  // perform the actual search passing in the index, the search query and the type
+  client.search({index:'user_behaviour',  body:body})
+  .then(results => {
+
+    res.send(results.hits);
+  })
+  .catch(err=>{
+    console.log(err.status)
+  });
+
+})
+
 // listen on the specified port
 app .listen( app.get( 'port' ), function(){
   console.log( 'Express server listening on port ' + app.get( 'port' ));
