@@ -1,2 +1,2 @@
-# elastic-nodejs-demo
-A Product search demo build with elasticsearch and nodejs
+# Elastic Nodejs Demo
+A Product search demo build with elasticsearch and nodejs.
