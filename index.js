@@ -10,9 +10,13 @@ const client = new elasticsearch.Client({
     auth: {
       username: process.env.DB_USER,
       password: process.env.DB_PASS
-    }
-   hosts: [process.env.DB_HOST]
+    },
+   // hosts: [process.env.DB_HOST]
+     node: process.env.DB_HOST,
+
 });
+
+console.log(client)
 
 //require Express
 const express = require( 'express' );
