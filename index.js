@@ -4,8 +4,16 @@ require('dotenv').config()
 const elasticsearch = require('elasticsearch');
 // instantiate an elasticsearch client
 const client = new elasticsearch.Client({
+   cloud: {
+      id: 'name:'+ process.env.DB_ID,
+    },
+    auth: {
+      username: process.env.DB_USER,
+      password: process.env.DB_PASS
+    }
    hosts: [process.env.DB_HOST]
 });
+
 //require Express
 const express = require( 'express' );
 // instanciate an instance of express and hold the value in a constant called app
