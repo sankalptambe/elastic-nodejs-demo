@@ -76,7 +76,6 @@ app.get('/search', function (req, res){
     "query": {
       "match": {
          "name": {
-            // "query": "*"+req.query['q']+"*",
             "query": req.query['q'],
             // "operator": "and"
          }
