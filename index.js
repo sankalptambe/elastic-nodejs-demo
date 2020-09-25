@@ -13,7 +13,6 @@ const client = new elasticsearch.Client({
   auth: {
     username: process.env.DB_USER,
     password: process.env.DB_PASS
-      // apiKey: 'NTVjVnJIUUJITnNERlVCUGpxS0Q6dGdtTU9TMThSQkNpcjJiMkVMeDZlQQ=='
   },
   hosts: [
     'https://'+process.env.DB_USER+':'+process.env.DB_PASS+'@'+process.env.DB_HOST
